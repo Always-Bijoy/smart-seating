@@ -2,10 +2,12 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../models/trip_model.dart';
 import '../providers/trip_provider.dart';
 import '../services/sun_calculator.dart';
+import '../widgets/app_bottom_nav.dart';
 import '../widgets/buttons.dart';
 
 class SunTrackerScreen extends StatelessWidget {
@@ -19,39 +21,35 @@ class SunTrackerScreen extends StatelessWidget {
             ? tripProvider.currentTrip!
             : SunCalculator.calculate('Manikganj', 'Dhaka', DateTime.now());
 
+        final l10n = context.l10n;
         return Scaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Column(
-              children: [
-                _buildAppBar(context, trip),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        _buildSunDial(trip),
-                        const SizedBox(height: 20),
-                        _buildIntensityBanner(trip),
-                        const SizedBox(height: 12),
-                        _buildShadeMovingCard(trip),
-                        const SizedBox(height: 20),
-                        _buildTimelineCard(trip),
-                        const SizedBox(height: 28),
-                        SecondaryButton(
-                          label: 'Plan Another Trip',
-                          icon: Icons.directions_bus_rounded,
-                          onPressed: () =>
-                              Navigator.popUntil(context, (r) => r.isFirst),
-                        ),
-                        const SizedBox(height: 24),
-                      ],
+          body: Container(
+            decoration: const BoxDecoration(
+              gradient: AppColors.planScreenGradient,
+            ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  _buildAppBar(context, l10n),
+                  _buildHeaderChips(trip, l10n),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+                          _buildCompass(trip),
+                          const SizedBox(height: 28),
+                          _buildStatusSection(trip, l10n),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  _buildFooter(context, trip, l10n),
+                ],
+              ),
             ),
           ),
         );
@@ -59,173 +57,192 @@ class SunTrackerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAppBar(BuildContext context, TripModel trip) {
-    return Container(
+  // ─── App bar ────────────────────────────────────────────────────────────────
+
+  Widget _buildAppBar(BuildContext context, AppLocalizations l10n) {
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       child: Row(
         children: [
           GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+            child: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: AppColors.textPrimary.withValues(alpha: 0.6),
+              size: 24,
             ),
           ),
           const Spacer(),
           Column(
             children: [
               Text(
-                'LIVE TRACKER',
+                l10n.liveTrackerLabel,
                 style: GoogleFonts.poppins(
                   fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textMuted,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary.withValues(alpha: 0.4),
                   letterSpacing: 1.5,
                 ),
               ),
               Text(
-                'Sun Position',
+                l10n.sunPosition,
                 style: GoogleFonts.poppins(
                   fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
           const Spacer(),
-          const Icon(Icons.more_horiz_rounded, size: 24),
+          Icon(
+            Icons.more_horiz_rounded,
+            color: AppColors.textPrimary.withValues(alpha: 0.6),
+            size: 24,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSunDial(TripModel trip) {
-    // Sun dot position on the compass ring (radius 105)
-    final Offset sunOffset = trip.isNight
-        ? const Offset(0, -105)
-        : SunCalculator.sunDotOffset(trip.sunAzimuth, 105);
+  // ─── Header chips (time + direction) ────────────────────────────────────────
+
+  Widget _buildHeaderChips(TripModel trip, AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _chip(icon: Icons.schedule_rounded, label: trip.formattedTime),
+          const SizedBox(width: 8),
+          _chip(
+            icon: Icons.explore_rounded,
+            label: l10n.headingChip(trip.headingLabel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _chip({required IconData icon, required String label}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: AppColors.primary, size: 14),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary.withValues(alpha: 0.8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── Compass ────────────────────────────────────────────────────────────────
+
+  Widget _buildCompass(TripModel trip) {
+    const compassSize = 288.0;
+    const sunRadius = 115.0;
+
+    final sunOffset = trip.isNight
+        ? const Offset(0, -sunRadius)
+        : SunCalculator.sunDotOffset(trip.sunAzimuth, sunRadius);
+
+    final headingRad = trip.headingDegrees * math.pi / 180;
 
     return Center(
       child: SizedBox(
-        width: 260,
-        height: 260,
+        width: compassSize,
+        height: compassSize,
         child: Stack(
+          clipBehavior: Clip.none,
           alignment: Alignment.center,
           children: [
-            // Outer ring
+            // Outer frosted circle
             Container(
-              width: 240,
-              height: 240,
+              width: compassSize,
+              height: compassSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.2),
                 border: Border.all(
-                  color: const Color(0xFFEEEEEE),
-                  width: 1.5,
+                  color: Colors.black.withValues(alpha: 0.05),
                 ),
               ),
             ),
-            // Inner ring
-            Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFFEEEEEE),
-                  width: 1.5,
-                ),
-              ),
+
+            // Inner dashed ring
+            SizedBox(
+              width: compassSize - 32,
+              height: compassSize - 32,
+              child: CustomPaint(painter: _DashedCirclePainter()),
             ),
-            // Tick marks
-            ...List.generate(12, (i) {
-              final angle = (i * 30.0) * math.pi / 180;
-              return Transform.rotate(
-                angle: angle,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 1.5,
-                      height: 8,
-                      color: const Color(0xFFDDDDDD),
-                    ),
-                    const SizedBox(height: 110),
-                  ],
-                ),
-              );
-            }),
 
-            // Bus icon in centre
-            _buildBusTopView(trip),
-
-            // Sun dot
-            if (!trip.isNight)
-              Transform.translate(
-                offset: sunOffset,
-                child: Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.5),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Text('☀', style: TextStyle(fontSize: 10)),
-                  ),
-                ),
-              )
-            else
-              Transform.translate(
-                offset: const Offset(0, -105),
-                child: Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    color: Colors.indigo.shade300,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text('🌙', style: TextStyle(fontSize: 9)),
-                  ),
-                ),
-              ),
+            // Sun arc trajectory
+            SizedBox(
+              width: compassSize,
+              height: compassSize,
+              child: CustomPaint(painter: _SunArcPainter()),
+            ),
 
             // Cardinal labels
-            Positioned(
-              top: 8,
-              child: Text('N',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
+            Positioned(top: 12, child: _cardinalLabel('N')),
+            Positioned(right: 12, child: _cardinalLabel('E')),
+            Positioned(bottom: 12, child: _cardinalLabel('S')),
+            Positioned(left: 12, child: _cardinalLabel('W')),
+
+            // Sun icon with glow
+            Transform.translate(
+              offset: sunOffset,
+              child: trip.isNight
+                  ? const Icon(
+                      Icons.nightlight_round,
+                      color: Colors.indigo,
+                      size: 28,
+                    )
+                  : Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.primary.withValues(alpha: 0.30),
+                          ),
+                        ),
+                        const Icon(
+                          Icons.wb_sunny_rounded,
+                          color: AppColors.primary,
+                          size: 32,
+                        ),
+                      ],
+                    ),
             ),
-            Positioned(
-              bottom: 8,
-              child: Text('S',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
-            ),
-            Positioned(
-              right: 8,
-              child: Text('E',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
-            ),
-            Positioned(
-              left: 8,
-              child: Text('W',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
+
+            // Bus — landscape, rotated to heading, with navigation arrow
+            Transform.rotate(
+              angle: headingRad,
+              child: _buildBusView(trip),
             ),
           ],
         ),
@@ -233,277 +250,385 @@ class SunTrackerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBusTopView(TripModel trip) {
-    // Rotate the bus icon to match the heading
-    final headingRad = trip.headingDegrees * math.pi / 180;
-    return Transform.rotate(
-      angle: headingRad,
-      child: Container(
-        width: 56,
-        height: 90,
-        decoration: BoxDecoration(
-          color: const Color(0xFF2A2A2A),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+  Widget _cardinalLabel(String label) {
+    return Text(
+      label,
+      style: GoogleFonts.poppins(
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        color: Colors.black.withValues(alpha: 0.2),
+      ),
+    );
+  }
+
+  /// Landscape bus centred in the compass.
+  /// [clipBehavior: Clip.none] lets the nav arrow overflow above the bus.
+  Widget _buildBusView(TripModel trip) {
+    final leftColor = trip.sunSide == 'left'
+        ? AppColors.primary.withValues(alpha: 0.4)
+        : const Color(0xFF60A5FA).withValues(alpha: 0.3);
+    final rightColor = trip.sunSide == 'right'
+        ? AppColors.primary.withValues(alpha: 0.4)
+        : const Color(0xFF60A5FA).withValues(alpha: 0.3);
+
+    return SizedBox(
+      width: 96,
+      height: 48,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Navigation arrow above the bus (outside clip bounds)
+          const Positioned(
+            top: -28,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Icon(
+                Icons.navigation_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
+            ),
+          ),
+
+          // Bus body
+          Container(
+            width: 96,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFF181611),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.30),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Row(
+                children: [
+                  Expanded(child: Container(color: leftColor)),
+                  Container(width: 1.5, color: Colors.black26),
+                  Expanded(child: Container(color: rightColor)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── Status section ──────────────────────────────────────────────────────────
+
+  Widget _buildStatusSection(TripModel trip, AppLocalizations l10n) {
+    final shadeParts = l10n.shadeIsMovingRich(trip.shadeSide);
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(color: Colors.white),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 6,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              _busWindow(const Color(0xFF1A3A5C)),
-              const SizedBox(height: 3),
-              _busWindow(const Color(0xFF1A3A5C)),
-              const SizedBox(height: 3),
-              _busWindow(const Color(0xFF4A90D9)),
-              const SizedBox(height: 3),
-              _busWindow(const Color(0xFF4A90D9)),
+              const Icon(
+                Icons.light_mode_rounded,
+                color: AppColors.primary,
+                size: 16,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                trip.isNight
+                    ? l10n.noSunlightNighttime
+                    : l10n.intenseSunlightOnSide(trip.sunSide),
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
 
-  Widget _busWindow(Color color) =>
-      Container(width: 36, height: 14, color: color);
+        const SizedBox(height: 10),
 
-  Widget _buildIntensityBanner(TripModel trip) {
-    return Row(
-      children: [
-        Icon(
-          trip.isNight ? Icons.nightlight_round : Icons.wb_sunny_rounded,
-          color: trip.isNight ? AppColors.textMuted : AppColors.sunYellow,
-          size: 18,
-        ),
-        const SizedBox(width: 6),
-        Text(
-          trip.isNight
-              ? 'No sunlight — nighttime travel'
-              : 'Intense Sunlight on ${_cap(trip.sunSide)}',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: trip.isNight
-                ? AppColors.textSecondary
-                : const Color(0xFF8B6914),
-          ),
-        ),
-        const Spacer(),
-        Row(
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
+        RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+            ),
+            children: [
+              TextSpan(text: shadeParts[0]),
+              TextSpan(
+                text: shadeParts[1],
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF3B82F6),
+                ),
               ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              trip.formattedTime,
-              style: GoogleFonts.poppins(
-                  fontSize: 12, color: AppColors.textSecondary),
-            ),
-            const SizedBox(width: 10),
-            const Icon(Icons.navigation_rounded,
-                color: AppColors.textSecondary, size: 14),
-            const SizedBox(width: 4),
-            Text(
-              trip.headingLabel,
-              style: GoogleFonts.poppins(
-                  fontSize: 12, color: AppColors.textSecondary),
-            ),
-          ],
+              TextSpan(text: shadeParts[2]),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildShadeMovingCard(TripModel trip) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(20),
-      ),
+  // ─── Footer ──────────────────────────────────────────────────────────────────
+
+  Widget _buildFooter(
+      BuildContext context, TripModel trip, AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Recommended seat side',
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
+          _buildTimeProjection(trip, l10n),
+          const SizedBox(height: 16),
+          SecondaryButton(
+            label: l10n.notifyOnShadeChange,
+            icon: Icons.notifications_active_rounded,
+            iconColor: AppColors.primary,
+            onPressed: () {},
           ),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Sit on the ',
-                  style: GoogleFonts.poppins(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                TextSpan(
-                  text: _cap(trip.shadeSide),
-                  style: GoogleFonts.poppins(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.accent,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '${trip.origin} → ${trip.destination} · ${trip.formattedTime}',
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              color: AppColors.textMuted,
-            ),
+          const SizedBox(height: 22),
+          AppBottomNav(
+            activeTab: NavTab.tracker,
+            onHomeTap: () => Navigator.popUntil(context, (r) => r.isFirst),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTimelineCard(TripModel trip) {
-    // Fraction of daylight elapsed (6 AM = 0, 6 PM = 1)
+  Widget _buildTimeProjection(TripModel trip, AppLocalizations l10n) {
+    // Range: 12:00 PM (12h) → 8:00 PM (20h) = 8 hours
     final hour = trip.departureTime.hour + trip.departureTime.minute / 60.0;
-    final fraction = ((hour - 6.0) / 12.0).clamp(0.0, 1.0);
+    final fraction = ((hour - 12.0) / 8.0).clamp(0.0, 1.0);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'TIME PROJECTION',
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textMuted,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  Text(
-                    trip.formattedTime,
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: trip.isNight
-                      ? Colors.indigo.shade100
-                      : AppColors.primary,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  trip.isNight ? 'NIGHT' : 'DAY',
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.timeProjection,
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: trip.isNight
-                        ? Colors.indigo.shade700
-                        : Colors.black87,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary.withValues(alpha: 0.4),
+                    letterSpacing: 1.0,
                   ),
                 ),
+                Text(
+                  trip.formattedTime,
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(6),
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          LayoutBuilder(builder: (context, constraints) {
-            final totalWidth = constraints.maxWidth;
-            final dotLeft =
-                (fraction * totalWidth - 7).clamp(0.0, totalWidth - 14);
-            final fillWidth = fraction * totalWidth;
-            return Stack(
+              child: Text(
+                l10n.live,
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 14),
+
+        LayoutBuilder(builder: (context, constraints) {
+          final totalWidth = constraints.maxWidth;
+          final fillWidth = fraction * totalWidth;
+          final dotLeft = (fraction * totalWidth - 12).clamp(0.0, totalWidth - 24.0);
+          return SizedBox(
+            height: 48,
+            child: Stack(
               alignment: Alignment.center,
               children: [
+                // Track
                 Container(
-                  height: 4,
+                  height: 6,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFDDDDDD),
-                    borderRadius: BorderRadius.circular(2),
+                    color: Colors.black.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
+                // Fill
                 Positioned(
                   left: 0,
                   child: Container(
-                    height: 4,
+                    height: 6,
                     width: fillWidth,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, Color(0xFFFFE082)],
-                      ),
-                      borderRadius: BorderRadius.circular(2),
+                      color: AppColors.primary.withValues(alpha: 0.30),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
                 ),
+                // Thumb
                 Positioned(
                   left: dotLeft,
                   child: Container(
-                    width: 14,
-                    height: 14,
+                    width: 24,
+                    height: 24,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(color: Colors.white, width: 4),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.4),
+                          color: Colors.black.withValues(alpha: 0.10),
                           blurRadius: 6,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
                   ),
                 ),
               ],
-            );
-          }),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('6:00 AM',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
-              Text('12:00 PM',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
-              Text('6:00 PM',
-                  style: GoogleFonts.poppins(
-                      fontSize: 11, color: AppColors.textMuted)),
-            ],
-          ),
-        ],
+            ),
+          );
+        }),
+
+        const SizedBox(height: 8),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _timeLabel(l10n.timeLabelNoon),
+            _timeLabel(l10n.timeLabelAfternoon),
+            _timeLabel(l10n.timeLabelEvening),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _timeLabel(String text) {
+    return Text(
+      text,
+      style: GoogleFonts.poppins(
+        fontSize: 10,
+        fontWeight: FontWeight.w700,
+        color: Colors.black.withValues(alpha: 0.30),
       ),
     );
   }
 
-  String _cap(String s) =>
-      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+}
+
+// ─── Custom painters ─────────────────────────────────────────────────────────
+
+/// Draws a dashed circle to match the HTML's inner `border-2 border-dashed border-black/5`.
+class _DashedCirclePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.05)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 1;
+
+    const totalSegments = 48;
+    const totalAngle = 2 * math.pi;
+    const dashFraction = 0.5;
+
+    for (int i = 0; i < totalSegments; i++) {
+      final startAngle = totalAngle * i / totalSegments;
+      const sweepAngle = totalAngle / totalSegments * dashFraction;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        false,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Draws a dashed gradient arc representing the sun's path (yellow → blue).
+/// Mirrors the HTML SVG `stroke="url(#sunPath)" stroke-dasharray="2 2"`.
+class _SunArcPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width * 0.38;
+
+    const totalSegments = 36;
+    // Arc from West (π) sweeping counterclockwise to East (0) through North
+    const startAngle = math.pi;
+    const totalSweep = -math.pi;
+
+    for (int i = 0; i < totalSegments; i++) {
+      final t = i / totalSegments;
+      final color = Color.lerp(
+        const Color(0xFFF4C025),
+        const Color(0xFF60A5FA),
+        t,
+      )!
+          .withValues(alpha: 0.5);
+
+      final paint = Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0
+        ..strokeCap = StrokeCap.round;
+
+      final segStart = startAngle + totalSweep * i / totalSegments;
+      const segSweep = totalSweep / totalSegments;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        segStart,
+        segSweep,
+        false,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

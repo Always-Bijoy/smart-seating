@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_theme.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'home_screen.dart';
 import 'plan_trip_screen.dart';
+import 'settings_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -18,7 +17,7 @@ class _MainShellState extends State<MainShell> {
   static const List<Widget> _screens = [
     HomeScreen(),
     PlanTripScreen(),
-    _SettingsScreen(),
+    SettingsScreen(),
   ];
 
   @override
@@ -41,25 +40,3 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-class _SettingsScreen extends StatelessWidget {
-  const _SettingsScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
-      child: SafeArea(
-        child: Center(
-          child: Text(
-            'Settings',
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

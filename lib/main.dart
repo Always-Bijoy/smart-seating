@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'l10n/app_localizations.dart';
+import 'providers/locale_provider.dart';
 import 'theme/app_theme.dart';
-import 'screens/main_shell.dart';
+import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'providers/trip_provider.dart';
 
@@ -14,23 +17,56 @@ void main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
+
+  final localeProvider = LocaleProvider();
+  await localeProvider.loadSavedLocale();
+
   final bool seenOnboarding = await hasSeenOnboarding();
-  runApp(SmartSeatApp(showOnboarding: !seenOnboarding));
+  runApp(SmartSeatApp(
+    showOnboarding: !seenOnboarding,
+    localeProvider: localeProvider,
+  ));
 }
 
 class SmartSeatApp extends StatelessWidget {
   final bool showOnboarding;
-  const SmartSeatApp({super.key, required this.showOnboarding});
+  final LocaleProvider localeProvider;
+
+  const SmartSeatApp({
+    super.key,
+    required this.showOnboarding,
+    required this.localeProvider,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => TripProvider(),
-      child: MaterialApp(
-        title: 'Smart Seating',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.theme,
-        home: showOnboarding ? const OnboardingScreen() : const MainShell(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider.value(value: localeProvider),
+      ],
+      child: Consumer<LocaleProvider>(
+        builder: (context, lp, _) {
+          return MaterialApp(
+            title: 'Smart Seating',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.theme,
+            locale: lp.locale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('bn'),
+            ],
+            home: showOnboarding
+                ? const OnboardingScreen()
+                : const HomeScreen(),
+          );
+        },
       ),
     );
   }
