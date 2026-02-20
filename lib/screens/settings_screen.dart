@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/locale_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_bottom_nav.dart';
 import 'plan_trip_screen.dart';
 
+const _kPrivacyPolicyUrl =
+    'https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md';
+const _kTermsUrl =
+    'https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/TERMS_AND_CONDITIONS.md';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
+
+  Future<void> _openUrl(BuildContext context, String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open the page.')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +44,8 @@ class SettingsScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   children: [
                     const SizedBox(height: 8),
+
+                    // ── Language ────────────────────────────────────────────
                     _buildSectionLabel(l10n.settingsLanguage),
                     const SizedBox(height: 10),
                     _buildLanguageTile(
@@ -44,8 +63,31 @@ class SettingsScreen extends StatelessWidget {
                       nativeLabel: 'বাংলা',
                       emoji: '🇧🇩',
                     ),
-                    const SizedBox(height: 32),
+
+                    const SizedBox(height: 28),
+
+                    // ── Legal ───────────────────────────────────────────────
+                    _buildSectionLabel(l10n.settingsLegal),
+                    const SizedBox(height: 10),
+                    _buildLegalTile(
+                      context,
+                      icon: Icons.privacy_tip_rounded,
+                      label: l10n.settingsPrivacyPolicy,
+                      url: _kPrivacyPolicyUrl,
+                    ),
+                    const SizedBox(height: 10),
+                    _buildLegalTile(
+                      context,
+                      icon: Icons.gavel_rounded,
+                      label: l10n.settingsTerms,
+                      url: _kTermsUrl,
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // ── App info ────────────────────────────────────────────
                     _buildAppInfo(context, l10n),
+                    const SizedBox(height: 12),
                   ],
                 ),
               ),
@@ -69,17 +111,15 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  // ── Header ────────────────────────────────────────────────────────────────
+
   Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.settings_rounded,
-            color: AppColors.primary,
-            size: 24,
-          ),
+          const Icon(Icons.settings_rounded, color: AppColors.primary, size: 24),
           const SizedBox(width: 8),
           Text(
             l10n.settingsTitle,
@@ -94,6 +134,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  // ── Section label ─────────────────────────────────────────────────────────
+
   Widget _buildSectionLabel(String label) {
     return Text(
       label.toUpperCase(),
@@ -106,6 +148,8 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  // ── Language tile ─────────────────────────────────────────────────────────
+
   Widget _buildLanguageTile(
     BuildContext context, {
     required String code,
@@ -114,8 +158,7 @@ class SettingsScreen extends StatelessWidget {
     required String emoji,
   }) {
     final localeProvider = context.read<LocaleProvider>();
-    final currentCode =
-        context.watch<LocaleProvider>().locale.languageCode;
+    final currentCode = context.watch<LocaleProvider>().locale.languageCode;
     final isSelected = currentCode == code;
 
     return GestureDetector(
@@ -179,11 +222,8 @@ class SettingsScreen extends StatelessWidget {
                   color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.check_rounded,
-                  color: Colors.white,
-                  size: 16,
-                ),
+                child: const Icon(Icons.check_rounded,
+                    color: Colors.white, size: 16),
               )
             else
               Container(
@@ -191,8 +231,7 @@ class SettingsScreen extends StatelessWidget {
                 height: 26,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.black.withValues(alpha: 0.15),
-                  ),
+                      color: Colors.black.withValues(alpha: 0.15)),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -201,6 +240,65 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
+
+  // ── Legal tile ────────────────────────────────────────────────────────────
+
+  Widget _buildLegalTile(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String url,
+  }) {
+    return GestureDetector(
+      onTap: () => _openUrl(context, url),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: AppColors.primary, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: AppColors.textMuted,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── App info ──────────────────────────────────────────────────────────────
 
   Widget _buildAppInfo(BuildContext context, AppLocalizations l10n) {
     return Container(
@@ -218,11 +316,8 @@ class SettingsScreen extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.directions_bus_rounded,
-              color: AppColors.primary,
-              size: 22,
-            ),
+            child: const Icon(Icons.directions_bus_rounded,
+                color: AppColors.primary, size: 22),
           ),
           const SizedBox(width: 14),
           Expanded(

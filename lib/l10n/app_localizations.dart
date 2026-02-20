@@ -147,6 +147,9 @@ class AppLocalizations {
   String get settingsLanguage => _t('settingsLanguage');
   String get settingsEnglish => _t('settingsEnglish');
   String get settingsBengali => _t('settingsBengali');
+  String get settingsLegal => _t('settingsLegal');
+  String get settingsPrivacyPolicy => _t('settingsPrivacyPolicy');
+  String get settingsTerms => _t('settingsTerms');
 
   // ── Strings map ───────────────────────────────────────────────────────────
 
@@ -220,6 +223,9 @@ class AppLocalizations {
       'settingsLanguage': 'Language',
       'settingsEnglish': 'English',
       'settingsBengali': 'বাংলা',
+      'settingsLegal': 'Legal',
+      'settingsPrivacyPolicy': 'Privacy Policy',
+      'settingsTerms': 'Terms & Conditions',
     },
     'bn': {
       'appName': 'স্মার্ট সিটিং',
@@ -290,6 +296,9 @@ class AppLocalizations {
       'settingsLanguage': 'ভাষা',
       'settingsEnglish': 'English',
       'settingsBengali': 'বাংলা',
+      'settingsLegal': 'আইনি বিষয়',
+      'settingsPrivacyPolicy': 'গোপনীয়তা নীতি',
+      'settingsTerms': 'শর্তাবলী',
     },
   };
 }
