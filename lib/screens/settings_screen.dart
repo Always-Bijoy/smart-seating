@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/locale_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_bottom_nav.dart';
+import 'plan_trip_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -12,41 +14,56 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Container(
-      decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context, l10n),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: [
-                  const SizedBox(height: 8),
-                  _buildSectionLabel(l10n.settingsLanguage),
-                  const SizedBox(height: 10),
-                  _buildLanguageTile(
-                    context,
-                    code: 'en',
-                    label: l10n.settingsEnglish,
-                    nativeLabel: 'English',
-                    emoji: '🇬🇧',
-                  ),
-                  const SizedBox(height: 10),
-                  _buildLanguageTile(
-                    context,
-                    code: 'bn',
-                    label: l10n.settingsBengali,
-                    nativeLabel: 'বাংলা',
-                    emoji: '🇧🇩',
-                  ),
-                  const SizedBox(height: 32),
-                  _buildAppInfo(context, l10n),
-                ],
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context, l10n),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  children: [
+                    const SizedBox(height: 8),
+                    _buildSectionLabel(l10n.settingsLanguage),
+                    const SizedBox(height: 10),
+                    _buildLanguageTile(
+                      context,
+                      code: 'en',
+                      label: l10n.settingsEnglish,
+                      nativeLabel: 'English',
+                      emoji: '🇬🇧',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildLanguageTile(
+                      context,
+                      code: 'bn',
+                      label: l10n.settingsBengali,
+                      nativeLabel: 'বাংলা',
+                      emoji: '🇧🇩',
+                    ),
+                    const SizedBox(height: 32),
+                    _buildAppInfo(context, l10n),
+                  ],
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                child: AppBottomNav(
+                  activeTab: NavTab.settings,
+                  onHomeTap: () =>
+                      Navigator.popUntil(context, (r) => r.isFirst),
+                  onPlanTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const PlanTripScreen()),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

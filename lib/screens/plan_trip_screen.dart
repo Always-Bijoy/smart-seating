@@ -8,6 +8,7 @@ import '../widgets/buttons.dart';
 import '../providers/trip_provider.dart';
 import '../services/location_service.dart';
 import 'best_seat_screen.dart';
+import 'settings_screen.dart';
 
 class PlanTripScreen extends StatefulWidget {
   const PlanTripScreen({super.key});
@@ -727,6 +728,10 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
           AppBottomNav(
             activeTab: NavTab.plan,
             onHomeTap: () => Navigator.popUntil(context, (r) => r.isFirst),
+            onSettingsTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
           ),
         ],
       ),

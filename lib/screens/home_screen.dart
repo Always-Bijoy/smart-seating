@@ -10,6 +10,7 @@ import '../widgets/bus_illustration.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/buttons.dart';
 import 'plan_trip_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -388,6 +389,10 @@ class HomeScreen extends StatelessWidget {
       onPlanTap: () => Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const PlanTripScreen()),
+      ),
+      onSettingsTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SettingsScreen()),
       ),
     );
   }
