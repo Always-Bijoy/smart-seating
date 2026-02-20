@@ -20,8 +20,8 @@ After pushing, verify your raw URLs load plain text in a browser:
 
 | Document | Raw URL |
 |----------|---------|
-| Privacy Policy | `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md` |
-| Terms & Conditions | `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/TERMS_AND_CONDITIONS.md` |
+| Privacy Policy | `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md` |
+| Terms & Conditions | `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/TERMS_AND_CONDITIONS.md` |
 
 ---
 
@@ -44,13 +44,13 @@ Open both `PRIVACY_POLICY.md` and `TERMS_AND_CONDITIONS.md` and fill in:
 ### App Content → Privacy Policy
 Paste this URL into the **Privacy policy** field:
 ```
-https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md
+https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md
 ```
 
 ### Store Listing — Full Description
 You can include this line at the end of your app description:
 ```
-Privacy Policy: https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md
+Privacy Policy: https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 **Effective Date:** February 20, 2026  
 **Last Updated:** February 20, 2026  
-**Hosted at:** `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/TERMS_AND_CONDITIONS.md`
+**Hosted at:** `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/TERMS_AND_CONDITIONS.md`
 
 ---
 
@@ -140,7 +140,7 @@ If any provision of these Terms is found to be unenforceable or invalid under ap
 
 ## 15. Entire Agreement
 
-These Terms, together with our [Privacy Policy](https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md), constitute the entire agreement between you and Smart Seating regarding your use of the App and supersede all prior agreements.
+These Terms, together with our [Privacy Policy](https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md), constitute the entire agreement between you and Smart Seating regarding your use of the App and supersede all prior agreements.
 
 ---
 
@@ -149,9 +149,9 @@ These Terms, together with our [Privacy Policy](https://raw.githubusercontent.co
 If you have any questions about these Terms and Conditions, please contact us:
 
 **Smart Seating**  
-📧 Email: [your-email@example.com]  
-🌐 Terms URL: `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/TERMS_AND_CONDITIONS.md`  
-📄 Privacy Policy: `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md`  
+📧 Email: allwayssbjioy@gmail.com  
+🌐 Terms URL: `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/TERMS_AND_CONDITIONS.md`  
+📄 Privacy Policy: `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md`  
 📍 Address: [Your Address, Dhaka, Bangladesh]
 
 ---

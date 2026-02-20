@@ -2,7 +2,7 @@
 
 **Effective Date:** February 20, 2026  
 **Last Updated:** February 20, 2026  
-**Hosted at:** `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md`
+**Hosted at:** `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md`
 
 ---
 
@@ -136,9 +136,9 @@ We may update this Privacy Policy from time to time. When we do, we will update 
 If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us:
 
 **Smart Seating**  
-📧 Email: [your-email@example.com]  
-🌐 Privacy Policy URL: `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/PRIVACY_POLICY.md`  
-📄 Terms & Conditions: `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/smart_seating/main/TERMS_AND_CONDITIONS.md`  
+📧 Email: allwayssbjioy@gmail.com  
+🌐 Privacy Policy URL: `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md`  
+📄 Terms & Conditions: `https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/TERMS_AND_CONDITIONS.md`  
 📍 Address: [Your Address, Dhaka, Bangladesh]
 
 ---
