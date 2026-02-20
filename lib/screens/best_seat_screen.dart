@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../models/trip_model.dart';
 import '../widgets/bus_seat_map.dart';
 import '../widgets/buttons.dart';
 import 'sun_tracker_screen.dart';
 
 class BestSeatScreen extends StatelessWidget {
-  const BestSeatScreen({super.key});
+  final TripModel trip;
+
+  const BestSeatScreen({super.key, required this.trip});
 
   @override
   Widget build(BuildContext context) {
-    // Right side seats (cols 2,3 = index 2,3 per row) for rows 2-4
-    const shadedSeats = {2, 3, 6, 7, 10, 11};
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -31,9 +31,10 @@ class BestSeatScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _buildRouteChip(),
                       const SizedBox(height: 24),
-                      const BusSeatMap(
-                        shadedSeats: shadedSeats,
-                        selectedSeats: {2, 3, 6, 7, 10, 11},
+                      BusSeatMap(
+                        shadedSeats: trip.shadedSeats,
+                        selectedSeats: trip.shadedSeats,
+                        shadeSide: trip.shadeSide,
                       ),
                       const SizedBox(height: 20),
                       _buildHeatBanner(),
@@ -111,7 +112,7 @@ class BestSeatScreen extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            '2:00 PM • Heading South-East',
+            trip.chipLabel,
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -124,13 +125,30 @@ class BestSeatScreen extends StatelessWidget {
   }
 
   Widget _buildHeatBanner() {
+    if (trip.isNight) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.nightlight_round, color: AppColors.textMuted, size: 18),
+          const SizedBox(width: 6),
+          Text(
+            'No direct sunlight — nighttime travel',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      );
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(Icons.wb_sunny_rounded, color: AppColors.sunYellow, size: 18),
         const SizedBox(width: 6),
         Text(
-          'Intense heat on LEFT',
+          'Intense heat on ${_cap(trip.sunSide)}',
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -158,45 +176,96 @@ class BestSeatScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Sit on ',
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                TextSpan(
-                  text: 'RIGHT',
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primary,
-                  ),
-                ),
-                TextSpan(
-                  text: ' side',
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
+          if (trip.isNight) ...[
+            const Icon(Icons.nights_stay_rounded,
+                color: AppColors.accent, size: 32),
+            const SizedBox(height: 8),
+            Text(
+              'All seats are comfortable!',
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
+          ] else ...[
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Sit on ',
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  TextSpan(
+                    text: trip.shadeSideUpper,
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' side',
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 10),
           Text(
-            'Seats in rows 2–4 on the right offer 100%\nshade for the next 45 minutes.',
+            trip.recommendationDetail,
             style: GoogleFonts.poppins(
               fontSize: 13,
               color: AppColors.textSecondary,
               height: 1.5,
             ),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 14),
+          // Route summary row
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.directions_bus_rounded,
+                    color: AppColors.primary, size: 16),
+                const SizedBox(width: 6),
+                Text(
+                  trip.routeLabel,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Icon(Icons.access_time_rounded,
+                    color: AppColors.textMuted, size: 14),
+                const SizedBox(width: 4),
+                Text(
+                  trip.formattedTime,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -207,8 +276,8 @@ class BestSeatScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: PrimaryButton(
-        label: 'Notify Me on Arrival',
-        icon: Icons.notifications_rounded,
+        label: 'Track Sun Live',
+        icon: Icons.track_changes_rounded,
         onPressed: () {
           Navigator.push(
             context,
@@ -220,4 +289,7 @@ class BestSeatScreen extends StatelessWidget {
       ),
     );
   }
+
+  String _cap(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 }

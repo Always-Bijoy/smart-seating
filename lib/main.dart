@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'screens/main_shell.dart';
 import 'screens/onboarding_screen.dart';
+import 'providers/trip_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,11 +24,14 @@ class SmartSeatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Smart Seating',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.theme,
-      home: showOnboarding ? const OnboardingScreen() : const MainShell(),
+    return ChangeNotifierProvider(
+      create: (_) => TripProvider(),
+      child: MaterialApp(
+        title: 'Smart Seating',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.theme,
+        home: showOnboarding ? const OnboardingScreen() : const MainShell(),
+      ),
     );
   }
 }

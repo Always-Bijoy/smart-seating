@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/buttons.dart';
+import '../providers/trip_provider.dart';
+import '../services/location_service.dart';
 import 'best_seat_screen.dart';
 
 class PlanTripScreen extends StatefulWidget {
@@ -12,10 +15,37 @@ class PlanTripScreen extends StatefulWidget {
 }
 
 class _PlanTripScreenState extends State<PlanTripScreen> {
-  final TextEditingController _fromController =
-      TextEditingController(text: 'Manikganj');
-  final TextEditingController _toController = TextEditingController();
+  final _fromController = TextEditingController(text: 'Manikganj');
+  final _toController = TextEditingController();
   bool _isNow = true;
+  TimeOfDay? _laterTime;
+  bool _loadingLocation = false;
+
+  @override
+  void dispose() {
+    _fromController.dispose();
+    _toController.dispose();
+    super.dispose();
+  }
+
+  // ---------- helpers ----------
+
+  String _formatTimeOfDay(TimeOfDay t) {
+    final h = t.hour % 12 == 0 ? 12 : t.hour % 12;
+    final m = t.minute.toString().padLeft(2, '0');
+    final p = t.hour >= 12 ? 'PM' : 'AM';
+    return '$h:$m $p';
+  }
+
+  String get _nowLabel {
+    final now = TimeOfDay.now();
+    return 'Now (${_formatTimeOfDay(now)})';
+  }
+
+  String get _laterLabel {
+    if (_laterTime != null) return _formatTimeOfDay(_laterTime!);
+    return 'Later';
+  }
 
   void _swapLocations() {
     final temp = _fromController.text;
@@ -24,12 +54,82 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
     setState(() {});
   }
 
-  @override
-  void dispose() {
-    _fromController.dispose();
-    _toController.dispose();
-    super.dispose();
+  Future<void> _useCurrentLocation() async {
+    setState(() => _loadingLocation = true);
+    final result = await LocationService.getNearestCity();
+    if (!mounted) return;
+    setState(() => _loadingLocation = false);
+    if (result.isSuccess) {
+      _fromController.text = result.city!;
+    } else {
+      _showSnack(LocationService.errorMessage(result.error!));
+    }
   }
+
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _laterTime ?? TimeOfDay.now(),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(primary: AppColors.primary),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked != null) {
+      setState(() {
+        _laterTime = picked;
+        _isNow = false;
+      });
+    }
+  }
+
+  void _findShadySide() {
+    final from = _fromController.text.trim();
+    final to = _toController.text.trim();
+
+    if (from.isEmpty) {
+      _showSnack('Please enter your starting location.');
+      return;
+    }
+    if (to.isEmpty) {
+      _showSnack('Please enter your destination.');
+      return;
+    }
+    if (from.toLowerCase() == to.toLowerCase()) {
+      _showSnack('Origin and destination cannot be the same.');
+      return;
+    }
+
+    // Determine departure DateTime
+    DateTime departure;
+    if (_isNow) {
+      departure = DateTime.now();
+    } else if (_laterTime != null) {
+      final now = DateTime.now();
+      departure = DateTime(
+          now.year, now.month, now.day, _laterTime!.hour, _laterTime!.minute);
+    } else {
+      // "Later" selected but no time chosen — open picker
+      _pickTime();
+      return;
+    }
+
+    final trip = context.read<TripProvider>().planTrip(from, to, departure);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => BestSeatScreen(trip: trip)),
+    );
+  }
+
+  void _showSnack(String msg) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  // ---------- build ----------
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +155,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
                       const SizedBox(height: 28),
                       _buildDepartureSection(),
                       const SizedBox(height: 24),
-                      _buildWeatherCard(),
+                      _buildInfoCard(),
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -70,18 +170,22 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
   }
 
   Widget _buildAppBar(BuildContext context) {
+    final canGoBack = Navigator.canPop(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const Icon(
-              Icons.arrow_back_rounded,
-              color: AppColors.textPrimary,
-              size: 24,
-            ),
-          ),
+          if (canGoBack)
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppColors.textPrimary,
+                size: 24,
+              ),
+            )
+          else
+            const SizedBox(width: 24),
           const Spacer(),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -173,8 +277,9 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
               ),
             ],
           ),
-          child: TextField(
+            child: TextField(
             controller: _fromController,
+            textCapitalization: TextCapitalization.words,
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -183,8 +288,31 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
             decoration: InputDecoration(
               hintText: 'From',
               hintStyle: GoogleFonts.poppins(color: AppColors.textMuted),
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20, vertical: 18),
+              prefixIcon: const Icon(Icons.radio_button_checked,
+                  color: AppColors.primary, size: 18),
+              suffixIcon: _loadingLocation
+                  ? const Padding(
+                      padding: EdgeInsets.all(14),
+                      child: SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    )
+                  : Tooltip(
+                      message: 'Use my current location',
+                      child: IconButton(
+                        icon: const Icon(Icons.my_location_rounded,
+                            color: AppColors.primary, size: 20),
+                        onPressed: _useCurrentLocation,
+                        splashRadius: 20,
+                      ),
+                    ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               border: InputBorder.none,
             ),
           ),
@@ -218,6 +346,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
             ),
             child: TextField(
               controller: _toController,
+              textCapitalization: TextCapitalization.words,
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -226,8 +355,10 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
               decoration: InputDecoration(
                 hintText: 'Destination',
                 hintStyle: GoogleFonts.poppins(color: AppColors.textMuted),
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 18),
+                prefixIcon: const Icon(Icons.location_on_rounded,
+                    color: AppColors.accentOrange, size: 18),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 border: InputBorder.none,
               ),
             ),
@@ -284,16 +415,17 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
         Row(
           children: [
             _buildTimeToggle(
-              label: 'Now (2:00 PM)',
+              label: _nowLabel,
               icon: Icons.access_time_rounded,
               isActive: _isNow,
               onTap: () => setState(() => _isNow = true),
             ),
             const SizedBox(width: 10),
             _buildTimeToggle(
-              label: 'Later',
+              label: _laterLabel,
+              icon: _laterTime != null ? Icons.schedule_rounded : null,
               isActive: !_isNow,
-              onTap: () => setState(() => _isNow = false),
+              onTap: _pickTime,
             ),
           ],
         ),
@@ -311,7 +443,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
           color: isActive ? AppColors.primary : AppColors.cardBackground,
           borderRadius: BorderRadius.circular(30),
@@ -329,7 +461,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
             if (icon != null) ...[
               Icon(
                 icon,
-                size: 18,
+                size: 16,
                 color: isActive ? Colors.black87 : AppColors.textSecondary,
               ),
               const SizedBox(width: 6),
@@ -337,7 +469,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
             Text(
               label,
               style: GoogleFonts.poppins(
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: isActive ? Colors.black87 : AppColors.textSecondary,
               ),
@@ -348,7 +480,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
     );
   }
 
-  Widget _buildWeatherCard() {
+  Widget _buildInfoCard() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
@@ -365,37 +497,40 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
       child: Row(
         children: [
           Container(
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             decoration: const BoxDecoration(
               color: Color(0xFFFFF3D4),
               shape: BoxShape.circle,
             ),
             child: const Center(
-              child: Text('☀️', style: TextStyle(fontSize: 26)),
+              child: Text('☀️', style: TextStyle(fontSize: 22)),
             ),
           ),
           const SizedBox(width: 14),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Sunny Forecast',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sun-Based Seat Finder',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Direct exposure expected on this route.',
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
+                const SizedBox(height: 4),
+                Text(
+                  'We calculate the sun angle for your route & time to find the shadiest side.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                    height: 1.4,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -408,14 +543,7 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
       child: PrimaryButton(
         label: 'Find Shady Side',
         icon: Icons.event_seat_rounded,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const BestSeatScreen(),
-            ),
-          );
-        },
+        onPressed: _findShadySide,
       ),
     );
   }
