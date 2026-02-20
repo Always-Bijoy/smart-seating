@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Smart Seating</title>
+  <style>
+    :root {
+      --brand: #F4C025;
+      --brand-dark: #D4A010;
+      --brand-light: #FFF8DC;
+      --text: #1a1a1a;
+      --text-secondary: #555;
+      --muted: #888;
+      --border: #e8e8e8;
+      --bg: #fffdf4;
+      --card: #ffffff;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #FFF8DC 0%, #FFF3A0 50%, #E0F2FE 100%);
+      border-bottom: 2px solid var(--brand);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, #FFE566, #F4C025);
+      border-radius: 50%;
+      box-shadow: 0 6px 20px rgba(244,192,37,0.4);
+      font-size: 30px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--brand-dark); }
+    .meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .meta strong { color: var(--text-secondary); }
+
+    /* ── Nav pill ── */
+    .nav-pill {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 24px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .nav-pill a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .nav-pill a:hover {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #333;
+    }
+
+    /* ── Content ── */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Sections ── */
+    section {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    section h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--brand-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    section h2 .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px; height: 30px;
+      background: var(--brand-light);
+      border-radius: 8px;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    section h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 18px 0 8px;
+    }
+    p { color: var(--text-secondary); margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text); }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; margin: 14px 0; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead tr { background: var(--brand-light); }
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--brand-dark);
+    }
+    td { padding: 10px 14px; border-top: 1px solid var(--border); color: var(--text-secondary); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    /* ── Highlight box ── */
+    .highlight {
+      background: var(--brand-light);
+      border-left: 4px solid var(--brand);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 15px;
+      color: #555;
+    }
+    .highlight strong { color: #333; }
+
+    /* ── Badge list ── */
+    .badge-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-light);
+      border: 1px solid rgba(244,192,37,0.3);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brand-dark);
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: linear-gradient(135deg, var(--brand-light) 0%, #E0F2FE 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      text-align: center;
+      border: 1px solid rgba(244,192,37,0.25);
+      margin-bottom: 20px;
+    }
+    .contact-card h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .contact-card p { font-size: 14px; margin-bottom: 16px; }
+    .contact-card a {
+      display: inline-block;
+      background: var(--brand);
+      color: #333;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(244,192,37,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .contact-card a:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(244,192,37,0.5); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--brand-dark); text-decoration: none; font-weight: 600; }
+
+    @media (max-width: 600px) {
+      section { padding: 20px 18px; }
+      .contact-card { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-badge">🚌</div>
+  <h1>Privacy Policy — <span>Smart Seating</span></h1>
+  <p class="meta">
+    <strong>Effective Date:</strong> February 20, 2026 &nbsp;·&nbsp;
+    <strong>Last Updated:</strong> February 20, 2026
+  </p>
+</header>
+
+<nav class="nav-pill">
+  <a href="#intro">Introduction</a>
+  <a href="#data">Data We Collect</a>
+  <a href="#usage">How We Use It</a>
+  <a href="#third-party">Third-Party</a>
+  <a href="#permissions">Permissions</a>
+  <a href="#rights">Your Rights</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<main>
+
+  <!-- Intro -->
+  <section id="intro">
+    <h2><span class="icon">👋</span> Introduction</h2>
+    <p>Welcome to <strong>Smart Seating</strong> — a mobile app that helps bus passengers find the shadiest seat using real-time sun position calculations.</p>
+    <div class="highlight">
+      <strong>Short version:</strong> We collect almost no data. Everything that runs in Smart Seating stays on your device. No accounts, no servers, no tracking.
+    </div>
+    <p>This Privacy Policy explains what little information the app accesses, how it is used, and your rights. By using Smart Seating, you agree to the practices described here.</p>
+  </section>
+
+  <!-- Data collected -->
+  <section id="data">
+    <h2><span class="icon">📦</span> Information We Collect</h2>
+
+    <h3>Location Data (Optional)</h3>
+    <p>When you tap <strong>"Use My Location"</strong> on the Plan Trip screen, the app requests your GPS location to identify the nearest city and pre-fill the origin field.</p>
+    <div class="badge-list">
+      <span class="badge">✅ On-device only</span>
+      <span class="badge">✅ Never transmitted</span>
+      <span class="badge">✅ Not stored after session</span>
+      <span class="badge">✅ Optional — type manually anytime</span>
+    </div>
+
+    <h3>User Preferences (Local Storage)</h3>
+    <p>The app saves these two items locally on your device:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Data</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Language preference (<code>en</code> or <code>bn</code>)</td><td>Remember your chosen language between sessions</td></tr>
+          <tr><td>Onboarding completion status</td><td>Skip the intro screen on return visits</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>What We Do NOT Collect</h3>
+    <div class="badge-list">
+      <span class="badge">🚫 No names or emails</span>
+      <span class="badge">🚫 No location history</span>
+      <span class="badge">🚫 No route or travel data</span>
+      <span class="badge">🚫 No device identifiers</span>
+      <span class="badge">🚫 No crash reports</span>
+      <span class="badge">🚫 No payment info</span>
+      <span class="badge">🚫 No analytics</span>
+    </div>
+  </section>
+
+  <!-- Usage -->
+  <section id="usage">
+    <h2><span class="icon">⚙️</span> How We Use Information</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Information</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>GPS location (if granted)</td><td>Identify nearest city for origin field — on-device only</td></tr>
+          <tr><td>Language preference</td><td>Display app in your chosen language</td></tr>
+          <tr><td>Onboarding status</td><td>Provide smooth first-launch experience</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight">
+      We do <strong>not</strong> use your information for advertising, profiling, or any purpose beyond operating the core app features.
+    </div>
+    <p>The sun position and shade-side calculations are performed entirely using <strong>on-device algorithms</strong> based on publicly available solar geometry formulas. No trip data is ever sent to a server.</p>
+  </section>
+
+  <!-- Third party -->
+  <section id="third-party">
+    <h2><span class="icon">🔗</span> Third-Party Libraries</h2>
+    <p>Smart Seating uses the following open-source libraries, all of which operate entirely on-device:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Library</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Google Fonts (Poppins)</td><td>Typography — font files bundled with the app</td></tr>
+          <tr><td>Geolocator</td><td>Accesses device GPS when permission is granted</td></tr>
+          <tr><td>Provider</td><td>On-device state management</td></tr>
+          <tr><td>SharedPreferences</td><td>Local preference storage</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>None of these libraries receive personally identifiable information through our app.</p>
+  </section>
+
+  <!-- Permissions -->
+  <section id="permissions">
+    <h2><span class="icon">🔐</span> Permissions</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Permission</th><th>Platform</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td><code>ACCESS_FINE_LOCATION</code></td><td>Android</td><td>GPS for nearest-city lookup (optional)</td></tr>
+          <tr><td><code>ACCESS_COARSE_LOCATION</code></td><td>Android</td><td>Fallback GPS accuracy</td></tr>
+          <tr><td><code>NSLocationWhenInUseUsageDescription</code></td><td>iOS</td><td>GPS for nearest-city lookup (optional)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>You may revoke location permission at any time via <strong>Settings → Apps → Smart Seating → Permissions</strong>.</p>
+  </section>
+
+  <!-- Data retention -->
+  <section id="retention">
+    <h2><span class="icon">🗄️</span> Data Retention</h2>
+    <p>All data is stored locally on your device — <strong>you control retention entirely</strong>:</p>
+    <div class="badge-list">
+      <span class="badge">🗑️ Uninstalling the app deletes all data</span>
+      <span class="badge">🧹 Clearing app data removes local storage</span>
+      <span class="badge">🔒 We hold no copies on any server</span>
+    </div>
+  </section>
+
+  <!-- Children -->
+  <section id="children">
+    <h2><span class="icon">👶</span> Children's Privacy</h2>
+    <p>Smart Seating does not knowingly collect any personal information from children under 13. The app does not contain content directed at children. If you believe a child has provided personal information, please contact us immediately.</p>
+  </section>
+
+  <!-- Rights -->
+  <section id="rights">
+    <h2><span class="icon">⚖️</span> Your Rights</h2>
+    <p>Because we do not collect or store personal data on external servers, data subject rights (access, deletion, portability) are exercised directly on your device by managing the app's local storage or uninstalling the app.</p>
+  </section>
+
+  <!-- Changes -->
+  <section id="changes">
+    <h2><span class="icon">📋</span> Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. When we do, we will update the <strong>"Last Updated"</strong> date at the top. Continued use of the app after changes constitutes acceptance of the updated policy. For significant changes, we will provide an in-app notification.</p>
+  </section>
+
+  <!-- Contact -->
+  <div class="contact-card" id="contact">
+    <h2>📧 Contact Us</h2>
+    <p>Questions, concerns, or requests about this Privacy Policy?</p>
+    <a href="mailto:allwayssbjioy@gmail.com">allwayssbjioy@gmail.com</a>
+    <p style="margin-top:16px; font-size:13px; color:#888;">
+      Also see: <a href="terms_and_conditions.html" style="color: #D4A010; font-weight:600; text-decoration:none;">Terms &amp; Conditions →</a>
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 <strong>Smart Seating</strong>. All rights reserved. &nbsp;|&nbsp;
+    <a href="terms_and_conditions.html">Terms &amp; Conditions</a>
+  </p>
+</footer>
+
+</body>
+</html>

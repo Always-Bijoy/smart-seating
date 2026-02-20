@@ -9,9 +9,9 @@ import '../widgets/app_bottom_nav.dart';
 import 'plan_trip_screen.dart';
 
 const _kPrivacyPolicyUrl =
-    'https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/PRIVACY_POLICY.md';
+    'https://always-bijoy.github.io/smart-seating/privacy_policy.html';
 const _kTermsUrl =
-    'https://raw.githubusercontent.com/Always-Bijoy/smart-seating/main/TERMS_AND_CONDITIONS.md';
+    'https://always-bijoy.github.io/smart-seating/terms_and_conditions.html';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

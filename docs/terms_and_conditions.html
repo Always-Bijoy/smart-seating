@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms &amp; Conditions — Smart Seating</title>
+  <style>
+    :root {
+      --brand: #F4C025;
+      --brand-dark: #D4A010;
+      --brand-light: #FFF8DC;
+      --text: #1a1a1a;
+      --text-secondary: #555;
+      --muted: #888;
+      --border: #e8e8e8;
+      --bg: #fffdf4;
+      --card: #ffffff;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #FFF8DC 0%, #FFF3A0 50%, #E0F2FE 100%);
+      border-bottom: 2px solid var(--brand);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, #FFE566, #F4C025);
+      border-radius: 50%;
+      box-shadow: 0 6px 20px rgba(244,192,37,0.4);
+      font-size: 30px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--brand-dark); }
+    .meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .meta strong { color: var(--text-secondary); }
+
+    /* ── Nav pill ── */
+    .nav-pill {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 24px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .nav-pill a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .nav-pill a:hover {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #333;
+    }
+
+    /* ── Content ── */
+    main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Sections ── */
+    section {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    section h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--brand-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    section h2 .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px; height: 30px;
+      background: var(--brand-light);
+      border-radius: 8px;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    p { color: var(--text-secondary); margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text); }
+    ol { padding-left: 20px; color: var(--text-secondary); }
+    ol li { margin-bottom: 6px; }
+
+    /* ── Highlight box ── */
+    .highlight {
+      background: var(--brand-light);
+      border-left: 4px solid var(--brand);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 15px;
+      color: #555;
+    }
+    .highlight strong { color: #333; }
+
+    /* ── Warning box ── */
+    .warning {
+      background: #FFF3CD;
+      border-left: 4px solid #FF9800;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 15px;
+      color: #6D4C00;
+    }
+
+    /* ── Badge list ── */
+    .badge-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-light);
+      border: 1px solid rgba(244,192,37,0.3);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brand-dark);
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: linear-gradient(135deg, var(--brand-light) 0%, #E0F2FE 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      text-align: center;
+      border: 1px solid rgba(244,192,37,0.25);
+      margin-bottom: 20px;
+    }
+    .contact-card h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .contact-card p { font-size: 14px; margin-bottom: 16px; }
+    .contact-card a {
+      display: inline-block;
+      background: var(--brand);
+      color: #333;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(244,192,37,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .contact-card a:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(244,192,37,0.5); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--brand-dark); text-decoration: none; font-weight: 600; }
+
+    @media (max-width: 600px) {
+      section { padding: 20px 18px; }
+      .contact-card { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-badge">⚖️</div>
+  <h1>Terms &amp; Conditions — <span>Smart Seating</span></h1>
+  <p class="meta">
+    <strong>Effective Date:</strong> February 20, 2026 &nbsp;·&nbsp;
+    <strong>Last Updated:</strong> February 20, 2026
+  </p>
+</header>
+
+<nav class="nav-pill">
+  <a href="#acceptance">Acceptance</a>
+  <a href="#service">Service</a>
+  <a href="#license">License</a>
+  <a href="#accuracy">Accuracy</a>
+  <a href="#liability">Liability</a>
+  <a href="#ip">Intellectual Property</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<main>
+
+  <!-- Acceptance -->
+  <section id="acceptance">
+    <h2><span class="icon">📜</span> Acceptance of Terms</h2>
+    <p>By downloading, installing, or using <strong>Smart Seating</strong> ("the App"), you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the App.</p>
+    <div class="highlight">
+      These terms govern your use of Smart Seating. Please read them carefully before using the App.
+    </div>
+  </section>
+
+  <!-- Service -->
+  <section id="service">
+    <h2><span class="icon">🚌</span> Service Description</h2>
+    <p><strong>Smart Seating</strong> is a mobile application that helps bus passengers identify the shadiest side of a bus based on:</p>
+    <div class="badge-list">
+      <span class="badge">☀️ Solar position calculations</span>
+      <span class="badge">🗓️ Departure time</span>
+      <span class="badge">📍 Route direction</span>
+      <span class="badge">🌍 Geographic location</span>
+    </div>
+    <p style="margin-top:14px;">All calculations are performed <strong>on your device</strong> using established solar geometry algorithms. No data is sent to external servers.</p>
+  </section>
+
+  <!-- Eligibility -->
+  <section id="eligibility">
+    <h2><span class="icon">👤</span> Eligibility</h2>
+    <p>The App is available for use by individuals of all ages. Users under the age of 13 should obtain parental consent before using the App. By using the App, you confirm that you meet these eligibility requirements.</p>
+  </section>
+
+  <!-- License -->
+  <section id="license">
+    <h2><span class="icon">📱</span> License to Use</h2>
+    <p>Subject to these Terms, Smart Seating grants you a limited, non-exclusive, non-transferable, revocable license to use the App for your personal, non-commercial purposes.</p>
+    <p>You may <strong>not</strong>:</p>
+    <ol>
+      <li>Copy, modify, or distribute the App or its source code</li>
+      <li>Reverse engineer or decompile the App</li>
+      <li>Use the App for commercial purposes without written permission</li>
+      <li>Remove or alter any proprietary notices or labels</li>
+    </ol>
+  </section>
+
+  <!-- Accuracy -->
+  <section id="accuracy">
+    <h2><span class="icon">⚠️</span> Accuracy Disclaimer</h2>
+    <div class="warning">
+      <strong>Important:</strong> Sun position calculations and shade-side recommendations are estimates based on solar geometry algorithms. Actual conditions may vary due to bus orientation, road curves, buildings, weather, and other factors.
+    </div>
+    <p>Smart Seating <strong>does not guarantee</strong> that the recommended seat will always be in the shade. The App is a convenience tool, not a precision instrument. Always use your own judgment when selecting your seat.</p>
+  </section>
+
+  <!-- Location -->
+  <section id="location">
+    <h2><span class="icon">📍</span> Location Services</h2>
+    <p>When you grant location permission, the App uses your GPS coordinates solely to identify your nearest city. This data is processed on-device and is never transmitted externally. You may use the App without granting location permission by entering your origin city manually.</p>
+  </section>
+
+  <!-- IP -->
+  <section id="ip">
+    <h2><span class="icon">💡</span> Intellectual Property</h2>
+    <p>All content within the App — including but not limited to the user interface, graphics, algorithms, text, and branding — is the intellectual property of Smart Seating and is protected by applicable copyright and trademark laws.</p>
+    <p>The <strong>"Smart Seating"</strong> name and logo are proprietary marks. Use of these marks without prior written consent is prohibited.</p>
+  </section>
+
+  <!-- Liability -->
+  <section id="liability">
+    <h2><span class="icon">🛡️</span> Disclaimer of Warranties &amp; Liability</h2>
+    <p>The App is provided <strong>"as is"</strong> and <strong>"as available"</strong> without any warranty of any kind, express or implied.</p>
+    <p>To the maximum extent permitted by law, Smart Seating shall not be liable for:</p>
+    <div class="badge-list">
+      <span class="badge">❌ Inaccurate sun calculations</span>
+      <span class="badge">❌ Indirect or consequential damages</span>
+      <span class="badge">❌ Loss of data or device damage</span>
+      <span class="badge">❌ Service interruptions</span>
+    </div>
+    <p style="margin-top:14px;">Our total liability for any claims related to the App is limited to the amount you paid for the App (which is zero, as it is free).</p>
+  </section>
+
+  <!-- Third party -->
+  <section id="third-party">
+    <h2><span class="icon">🔗</span> Third-Party Services</h2>
+    <p>The App uses third-party open-source libraries (Google Fonts, Geolocator, Provider, SharedPreferences). These are governed by their respective licenses. We are not responsible for their availability, accuracy, or policies.</p>
+  </section>
+
+  <!-- Updates -->
+  <section id="updates">
+    <h2><span class="icon">🔄</span> Updates &amp; Termination</h2>
+    <p>We may update the App and these Terms at any time. Continued use after updates constitutes acceptance of the new terms. We reserve the right to discontinue the App or suspend access at any time without notice.</p>
+  </section>
+
+  <!-- Governing law -->
+  <section id="governing">
+    <h2><span class="icon">🌏</span> Governing Law</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of <strong>Bangladesh</strong>. Any disputes shall be resolved in the competent courts of Dhaka, Bangladesh.</p>
+  </section>
+
+  <!-- Contact -->
+  <div class="contact-card" id="contact">
+    <h2>📧 Contact Us</h2>
+    <p>Questions about these Terms &amp; Conditions?</p>
+    <a href="mailto:allwayssbjioy@gmail.com">allwayssbjioy@gmail.com</a>
+    <p style="margin-top:16px; font-size:13px; color:#888;">
+      Also see: <a href="privacy_policy.html" style="color: #D4A010; font-weight:600; text-decoration:none;">Privacy Policy →</a>
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 <strong>Smart Seating</strong>. All rights reserved. &nbsp;|&nbsp;
+    <a href="privacy_policy.html">Privacy Policy</a>
+  </p>
+</footer>
+
+</body>
+</html>
