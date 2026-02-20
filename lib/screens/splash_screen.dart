@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     await Future.delayed(const Duration(milliseconds: 2000));
     if (!mounted) return;
-    // _navigate();
+    _navigate();
   }
 
   Future<void> _navigate() async {
