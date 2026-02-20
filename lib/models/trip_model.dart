@@ -24,6 +24,10 @@ class TripModel {
   /// Flat seat indices (row * 4 + col) that are in shade
   final Set<int> shadedSeats;
 
+  /// Origin coordinates used for solar position calculation
+  final double originLat;
+  final double originLon;
+
   TripModel({
     required this.origin,
     required this.destination,
@@ -35,6 +39,8 @@ class TripModel {
     required this.sunSide,
     required this.shadeSide,
     required this.shadedSeats,
+    required this.originLat,
+    required this.originLon,
   });
 
   String get formattedTime {

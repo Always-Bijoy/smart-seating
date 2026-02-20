@@ -1,26 +1,43 @@
 import 'package:geolocator/geolocator.dart';
 import 'sun_calculator.dart';
 
-enum LocationError { serviceDisabled, permissionDenied, permissionPermanentlyDenied, timeout, unknown }
+enum LocationError {
+  serviceDisabled,
+  permissionDenied,
+  permissionPermanentlyDenied,
+  timeout,
+  unknown,
+}
 
 class LocationResult {
   final String? city;
+  final double? lat;
+  final double? lon;
   final LocationError? error;
-  const LocationResult.success(this.city) : error = null;
-  const LocationResult.failure(this.error) : city = null;
+
+  const LocationResult.success({
+    required this.city,
+    required this.lat,
+    required this.lon,
+  }) : error = null;
+
+  const LocationResult.failure(this.error)
+      : city = null,
+        lat = null,
+        lon = null;
+
   bool get isSuccess => city != null;
 }
 
 class LocationService {
-  /// Requests permission if needed and returns the nearest known city name.
+  /// Requests permission if needed and returns the nearest city name
+  /// together with the exact GPS coordinates.
   static Future<LocationResult> getNearestCity() async {
-    // Check if location hardware/service is on
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return const LocationResult.failure(LocationError.serviceDisabled);
     }
 
-    // Check / request permission
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -33,7 +50,6 @@ class LocationService {
           LocationError.permissionPermanentlyDenied);
     }
 
-    // Fetch position
     try {
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
@@ -41,9 +57,14 @@ class LocationService {
         ),
       ).timeout(const Duration(seconds: 15));
 
-      final city =
-          SunCalculator.nearestCity(position.latitude, position.longitude);
-      return LocationResult.success(city);
+      final city = SunCalculator.nearestCity(
+          position.latitude, position.longitude);
+
+      return LocationResult.success(
+        city: city,
+        lat: position.latitude,
+        lon: position.longitude,
+      );
     } on Exception {
       return const LocationResult.failure(LocationError.timeout);
     }

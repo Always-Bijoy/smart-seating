@@ -21,6 +21,10 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
   TimeOfDay? _laterTime;
   bool _loadingLocation = false;
 
+  // Exact GPS coords — set when the user taps "Use my location"
+  double? _fromLat;
+  double? _fromLon;
+
   @override
   void dispose() {
     _fromController.dispose();
@@ -58,10 +62,15 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
     setState(() => _loadingLocation = true);
     final result = await LocationService.getNearestCity();
     if (!mounted) return;
-    setState(() => _loadingLocation = false);
-    if (result.isSuccess) {
-      _fromController.text = result.city!;
-    } else {
+    setState(() {
+      _loadingLocation = false;
+      if (result.isSuccess) {
+        _fromController.text = result.city!;
+        _fromLat = result.lat;
+        _fromLon = result.lon;
+      }
+    });
+    if (!result.isSuccess) {
       _showSnack(LocationService.errorMessage(result.error!));
     }
   }
@@ -116,7 +125,13 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
       return;
     }
 
-    final trip = context.read<TripProvider>().planTrip(from, to, departure);
+    final trip = context.read<TripProvider>().planTrip(
+          from,
+          to,
+          departure,
+          fromLat: _fromLat,
+          fromLon: _fromLon,
+        );
 
     Navigator.push(
       context,
@@ -280,6 +295,11 @@ class _PlanTripScreenState extends State<PlanTripScreen> {
             child: TextField(
             controller: _fromController,
             textCapitalization: TextCapitalization.words,
+            onChanged: (_) {
+              // User typed manually — discard any GPS fix
+              _fromLat = null;
+              _fromLon = null;
+            },
             style: GoogleFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w500,
