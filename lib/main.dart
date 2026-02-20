@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/locale_provider.dart';
 import 'theme/app_theme.dart';
-import 'screens/home_screen.dart';
-import 'screens/onboarding_screen.dart';
+import 'screens/splash_screen.dart';
 import 'providers/trip_provider.dart';
 
 void main() async {
@@ -21,20 +20,14 @@ void main() async {
   final localeProvider = LocaleProvider();
   await localeProvider.loadSavedLocale();
 
-  final bool seenOnboarding = await hasSeenOnboarding();
-  runApp(SmartSeatApp(
-    showOnboarding: !seenOnboarding,
-    localeProvider: localeProvider,
-  ));
+  runApp(SmartSeatApp(localeProvider: localeProvider));
 }
 
 class SmartSeatApp extends StatelessWidget {
-  final bool showOnboarding;
   final LocaleProvider localeProvider;
 
   const SmartSeatApp({
     super.key,
-    required this.showOnboarding,
     required this.localeProvider,
   });
 
@@ -62,9 +55,7 @@ class SmartSeatApp extends StatelessWidget {
               Locale('en'),
               Locale('bn'),
             ],
-            home: showOnboarding
-                ? const OnboardingScreen()
-                : const HomeScreen(),
+            home: const SplashScreen(),
           );
         },
       ),
